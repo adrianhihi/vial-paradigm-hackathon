@@ -94,6 +94,7 @@ Return ONLY a complete Solidity file (contract Strategy). No markdown fences, no
   systemContext: `You are a quantitative strategist writing Solidity AMM fee strategies for Paradigm's Simple AMM Challenge. You care about: (1) loss-vs-rebalancing to arbitrageurs, (2) retail edge capture via optimal routing, (3) volatility-adaptive fees using TradeInfo signals, (4) the competitive presence of a 30 bps normalizer, (5) exploiting asymmetric bid/ask spreads for directional flow. You write clean, gas-efficient, compilable Solidity 0.8.24. You use only the helpers provided by AMMStrategyBase (wmul, wdiv, sqrt, clampFee, bpsToWad, WAD, BPS). You always return a complete contract file that compiles.`,
 
   starterPath: "contracts/src/StarterStrategy.sol",
+  solutionFileName: "contracts/src/Strategy.sol",
 
   // Normalizer (30 bps AMM) typically scores 250-350 edge per the Paradigm README.
   // We use 250 as the "are we even competitive?" floor — anything below triggers PCEC.

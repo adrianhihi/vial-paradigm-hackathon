@@ -28,6 +28,13 @@ export interface ArenaChallenge {
   systemContext: string;
   /** Path (relative to challenge dir) of the starter file */
   starterPath: string;
+  /**
+   * File name (relative to challenge-repo root) where the runner writes each
+   * candidate solution. For Simple AMM this is "contracts/src/Strategy.sol".
+   * For Persuasion it's "candidate.txt". This replaces the old StarterStrategy
+   * string-replacement hack.
+   */
+  solutionFileName: string;
   /** Command that runs the local evaluator and returns a score */
   evaluatorCommand: (solutionPath: string, seed: number) => string;
   /** Parses evaluator stdout into a numeric score (higher = better) */

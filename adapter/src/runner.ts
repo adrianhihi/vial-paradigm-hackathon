@@ -17,8 +17,14 @@ import { join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 
 import { simpleAmmChallenge, ammSeedCapsules } from "./challenges/simple-amm.js";
+import { persuasionChallenge, persuasionSeedCapsules } from "./challenges/persuasion.js";
+
+const CHALLENGE_REGISTRY: Record<string, { challenge: ArenaChallenge; seedCapsules: SeedCapsule[] }> = {
+  "simple-amm": { challenge: simpleAmmChallenge, seedCapsules: ammSeedCapsules },
+  "persuasion": { challenge: persuasionChallenge, seedCapsules: persuasionSeedCapsules },
+};
 import { GeneMap } from "./gene-map.js";
-import type { ArenaChallenge, CandidateSolution, FailureSignal } from "./types.js";
+import type { ArenaChallenge, CandidateSolution, FailureSignal, SeedCapsule } from "./types.js";
 import { synthesizeScoreFailure, synthesizePlateauFailure } from "./types.js";
 
 interface RunConfig {
@@ -161,7 +167,7 @@ async function evaluate(
   challengeRepoPath: string,
   seed: number,
 ): Promise<{ score: number; failures: FailureSignal[]; evaluationMs: number; raw: string }> {
-  const solutionPath = join(challengeRepoPath, challenge.starterPath.replace("StarterStrategy", "Strategy"));
+  const solutionPath = join(challengeRepoPath, challenge.solutionFileName);
   await writeFile(solutionPath, code, "utf8");
 
   const start = Date.now();
@@ -200,8 +206,9 @@ async function runLoop(
   const geneMap = new GeneMap(join(workDir, `${runId}-${mode}.db`));
 
   if (mode === "vial") {
-    for (const capsule of ammSeedCapsules) geneMap.upsertCapsule(capsule);
-    console.log(`[${mode}] Seeded ${ammSeedCapsules.length} capsules`);
+    const seedCapsules = CHALLENGE_REGISTRY[challenge.id]?.seedCapsules ?? [];
+    for (const capsule of seedCapsules) geneMap.upsertCapsule(capsule);
+    console.log(`[${mode}] Seeded ${seedCapsules.length} capsules`);
   }
 
   const history: CandidateSolution[] = [];
@@ -404,9 +411,17 @@ async function main() {
     return i >= 0 ? args[i + 1] : fallback;
   };
 
+  const challengeSlug = get("--challenge", "simple-amm");
+  const registryEntry = CHALLENGE_REGISTRY[challengeSlug];
+  if (!registryEntry) {
+    console.error(`\n❌ Unknown challenge: ${challengeSlug}`);
+    console.error(`   Available: ${Object.keys(CHALLENGE_REGISTRY).join(", ")}\n`);
+    process.exit(1);
+  }
+
   const config: RunConfig = {
     mode: get("--mode", "ab") as any,
-    challenge: simpleAmmChallenge,
+    challenge: registryEntry.challenge,
     iterations: parseInt(get("--iterations", "20"), 10),
     workDir: resolve(get("--workdir", "./work")),
     challengeRepoPath: resolve(get("--challenge-repo", "./amm-challenge")),
