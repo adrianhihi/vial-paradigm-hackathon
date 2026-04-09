@@ -1,0 +1,29 @@
+{
+  "name": "@vial-agent/adapter-optimization-arena",
+  "version": "0.0.1",
+  "description": "Vial runtime adapter for Paradigm Optimization Arena challenges. Treats low scores / plateaus as perceived failures, feeds them into PCEC, persists repair strategies as Gene Capsules. Domain-agnostic core — this adapter is the ONLY place where arena-specific terminology lives.",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx src/runner.ts",
+    "run:baseline": "tsx src/runner.ts --mode baseline --challenge simple-amm --iterations 30",
+    "run:vial": "tsx src/runner.ts --mode vial --challenge simple-amm --iterations 30",
+    "run:ab": "tsx src/runner.ts --mode ab --challenge simple-amm --iterations 30"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0",
+    "better-sqlite3": "^11.0.0",
+    "execa": "^9.0.0",
+    "p-limit": "^6.0.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.0",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.5.0"
+  }
+}

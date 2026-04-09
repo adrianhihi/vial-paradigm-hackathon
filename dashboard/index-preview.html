@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vial × Optimization Arena — Live Gene Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0a07;--text:#f0ebe3;--dim:rgba(240,235,227,0.6);--muted:rgba(240,235,227,0.4);
+  --border:rgba(255,255,255,0.07);--glass:rgba(255,255,255,0.03);
+  --amber:#f59e0b;--orange:#fb923c;--green:#10b981;--blue:#3b82f6;--purple:#8b5cf6;
+  --red:#ef4444;--cyan:#06b6d4;
+  --mono:'JetBrains Mono',monospace;--sans:'Sora',-apple-system,sans-serif
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);padding:24px;line-height:1.6;min-height:100vh}
+body::before{content:'';position:fixed;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:600px;background:radial-gradient(ellipse,rgba(245,158,11,0.08) 0%,transparent 70%);pointer-events:none}
+.container{max-width:1400px;margin:0 auto;position:relative;z-index:1}
+.wordmark{font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--amber);font-family:var(--mono);margin-bottom:8px}
+h1{font-size:26px;font-weight:300;letter-spacing:-0.02em;margin-bottom:6px}
+h1 span{font-weight:700;background:linear-gradient(135deg,var(--amber),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sub{font-size:12px;color:var(--dim);margin-bottom:28px}
+.live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.85)}}
+
+.grid{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;margin-bottom:20px}
+.card{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:22px}
+.card-title{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;font-family:var(--mono);color:var(--dim);margin-bottom:14px}
+
+/* Score summary */
+.score-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px}
+.stat{background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:14px 18px}
+.stat-label{font-size:9px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px}
+.stat-value{font-size:22px;font-weight:600;font-family:var(--mono)}
+.stat-delta{font-size:10px;margin-top:3px;font-family:var(--mono)}
+.stat.baseline .stat-value{color:#93c5fd}
+.stat.vial .stat-value{color:#fcd34d}
+.stat.delta .stat-value{color:var(--green)}
+
+/* Chart */
+#chart{width:100%;height:320px}
+.legend{display:flex;gap:18px;margin-top:10px;font-size:10px;font-family:var(--mono);color:var(--dim)}
+.legend-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle}
+
+/* Capsule list */
+.capsules{max-height:520px;overflow-y:auto;padding-right:4px}
+.capsules::-webkit-scrollbar{width:6px}
+.capsules::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
+.capsule{padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:rgba(0,0,0,0.2);margin-bottom:8px;transition:all 0.25s}
+.capsule:hover{border-color:rgba(255,255,255,0.15);background:rgba(255,255,255,0.03)}
+.capsule-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px}
+.capsule-id{font-size:10px;font-family:var(--mono);color:var(--muted)}
+.capsule-src{font-size:8px;font-weight:600;font-family:var(--mono);padding:2px 6px;border-radius:6px;text-transform:uppercase;letter-spacing:0.08em}
+.src-seed{color:#93c5fd;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.2)}
+.src-llm{color:#c4b5fd;background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.2)}
+.src-learned{color:#6ee7b7;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.2)}
+.capsule-trigger{font-size:11px;font-weight:600;color:var(--amber);font-family:var(--mono);margin-bottom:4px}
+.capsule-stats{display:flex;gap:10px;font-size:9px;font-family:var(--mono);color:var(--muted);margin-top:6px}
+.capsule-stat{display:flex;align-items:center;gap:3px}
+.capsule-bar{height:3px;border-radius:2px;background:rgba(255,255,255,0.08);margin-top:6px;overflow:hidden}
+.capsule-bar-fill{height:100%;background:linear-gradient(to right,var(--amber),var(--orange));transition:width 0.4s}
+
+/* Iteration log */
+.iter-log{max-height:260px;overflow-y:auto;font-family:var(--mono);font-size:10px;line-height:1.8}
+.iter-row{display:grid;grid-template-columns:40px 80px 100px 1fr;gap:10px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.iter-row .i{color:var(--muted)}
+.iter-row .s-base{color:#93c5fd}
+.iter-row .s-vial{color:#fcd34d}
+.iter-row .tags{color:var(--dim);font-size:9px}
+
+.status-bar{display:flex;justify-content:space-between;align-items:center;padding:10px 18px;background:var(--glass);border:1px solid var(--border);border-radius:12px;margin-bottom:20px;font-size:11px;font-family:var(--mono);color:var(--dim)}
+.run-id{color:var(--amber)}
+
+.empty{padding:40px;text-align:center;color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="wordmark">Vial Runtime · Paradigm Automated Research Hackathon · April 9 2026</div>
+  <h1>Gene Map evolving on <span>Simple AMM</span></h1>
+  <p class="sub"><span class="live-dot"></span>Live feed from <code>dashboard-state.json</code> — PCEC loop wrapping an LLM generating Solidity strategies against Paradigm's Optimization Arena local harness.</p>
+
+  <div class="status-bar">
+    <div>Run ID: <span class="run-id" id="run-id">—</span></div>
+    <div id="last-update">Waiting for data…</div>
+  </div>
+
+  <div class="score-summary">
+    <div class="stat baseline">
+      <div class="stat-label">Baseline best (naive LLM)</div>
+      <div class="stat-value" id="baseline-best">—</div>
+      <div class="stat-delta" id="baseline-iters"></div>
+    </div>
+    <div class="stat vial">
+      <div class="stat-label">Vial best (PCEC + Gene Map)</div>
+      <div class="stat-value" id="vial-best">—</div>
+      <div class="stat-delta" id="vial-iters"></div>
+    </div>
+    <div class="stat delta">
+      <div class="stat-label">Vial improvement</div>
+      <div class="stat-value" id="improvement">—</div>
+      <div class="stat-delta" id="capsule-count"></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="card-title">Convergence curves — score vs iteration</div>
+      <svg id="chart" viewBox="0 0 800 320" preserveAspectRatio="none"></svg>
+      <div class="legend">
+        <div><span class="legend-dot" style="background:#93c5fd"></span>Baseline</div>
+        <div><span class="legend-dot" style="background:#fcd34d"></span>Vial (PCEC + Gene Map)</div>
+        <div><span class="legend-dot" style="background:rgba(255,255,255,0.3)"></span>Iteration axis</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Gene Map — capsules (<span id="capsule-total">0</span>)</div>
+      <div class="capsules" id="capsules-list"><div class="empty">No capsules yet.</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Recent iterations</div>
+    <div class="iter-log" id="iter-log"><div class="empty">No iterations yet.</div></div>
+  </div>
+</div>
+
+<script>
+// Poll dashboard-state.json every 1.5 seconds and re-render.
+// During live demo, the runner writes this file after each iteration.
+// For canned demo, point this script at a pre-captured JSON file.
+// PREVIEW BUILD — state is embedded inline for offline viewing.
+// The live build in dashboard/index.html fetches dashboard-state.json instead.
+let state = {
+  "runId": "demo-ab12",
+  "mode": "ab",
+  "lastUpdate": "2026-04-09T12:34:56Z",
+  "history": [
+    {"iteration": 0, "mode": "baseline", "score": 12.4, "appliedCapsules": [], "failureCategories": ["fee-too-high"]},
+    {"iteration": 1, "mode": "baseline", "score": 8.1, "appliedCapsules": [], "failureCategories": ["compile-error"]},
+    {"iteration": 2, "mode": "baseline", "score": 18.3, "appliedCapsules": [], "failureCategories": ["arb-bleed"]},
+    {"iteration": 3, "mode": "baseline", "score": 22.7, "appliedCapsules": [], "failureCategories": []},
+    {"iteration": 4, "mode": "baseline", "score": 15.2, "appliedCapsules": [], "failureCategories": ["fee-too-high"]},
+    {"iteration": 5, "mode": "baseline", "score": 24.1, "appliedCapsules": [], "failureCategories": []},
+    {"iteration": 0, "mode": "vial", "score": 14.8, "appliedCapsules": ["amm-seed-001", "amm-seed-005"], "failureCategories": []},
+    {"iteration": 1, "mode": "vial", "score": 21.3, "appliedCapsules": ["amm-seed-002"], "failureCategories": ["arb-bleed"]},
+    {"iteration": 2, "mode": "vial", "score": 28.9, "appliedCapsules": ["amm-seed-003", "amm-seed-002"], "failureCategories": []},
+    {"iteration": 3, "mode": "vial", "score": 34.2, "appliedCapsules": ["amm-seed-006"], "failureCategories": []},
+    {"iteration": 4, "mode": "vial", "score": 41.7, "appliedCapsules": ["learned-a1b2c3d4e5f6"], "failureCategories": []},
+    {"iteration": 5, "mode": "vial", "score": 47.3, "appliedCapsules": ["learned-a1b2c3d4e5f6", "amm-seed-003"], "failureCategories": []}
+  ],
+  "capsules": [
+    {"id": "learned-a1b2c3d4e5f6", "trigger": "simple-amm:arb-bleed", "source": "llm", "confidence": 0.68, "hitCount": 3, "totalScoreDelta": 19.4},
+    {"id": "amm-seed-003", "trigger": "plateau", "source": "seed", "confidence": 0.78, "hitCount": 2, "totalScoreDelta": 12.8},
+    {"id": "amm-seed-002", "trigger": "arb-bleed", "source": "seed", "confidence": 0.82, "hitCount": 2, "totalScoreDelta": 8.9},
+    {"id": "amm-seed-005", "trigger": "simple-amm:score-below-baseline", "source": "seed", "confidence": 0.88, "hitCount": 1, "totalScoreDelta": 0},
+    {"id": "amm-seed-006", "trigger": "simple-amm:score-below-baseline", "source": "seed", "confidence": 0.75, "hitCount": 1, "totalScoreDelta": 5.3},
+    {"id": "amm-seed-001", "trigger": "fee-too-high", "source": "seed", "confidence": 0.85, "hitCount": 1, "totalScoreDelta": 0},
+    {"id": "amm-seed-004", "trigger": "compile-error", "source": "seed", "confidence": 0.95, "hitCount": 0, "totalScoreDelta": 0},
+    {"id": "amm-seed-007", "trigger": "plateau", "source": "seed", "confidence": 0.70, "hitCount": 0, "totalScoreDelta": 0},
+    {"id": "amm-seed-008", "trigger": "fee-too-high", "source": "seed", "confidence": 0.90, "hitCount": 0, "totalScoreDelta": 0}
+  ]
+}
+;
+
+async function fetchState() { render(); }
+
+function render() {
+  if (!state) return;
+  document.getElementById('run-id').textContent = state.runId || '—';
+  document.getElementById('last-update').textContent = 'Updated ' + new Date(state.lastUpdate).toLocaleTimeString();
+
+  // Score summary
+  const history = state.history || [];
+  const baseline = history.filter(h => h.mode === 'baseline' || state.mode === 'baseline');
+  const vial = history.filter(h => h.mode === 'vial' || state.mode === 'vial');
+
+  // If state.mode is set (single-mode run), the history is all for that mode
+  let bHist, vHist;
+  if (state.mode === 'baseline') { bHist = history; vHist = []; }
+  else if (state.mode === 'vial') { bHist = []; vHist = history; }
+  else { bHist = baseline; vHist = vial; }
+
+  const bBest = bHist.length ? Math.max(...bHist.map(h => h.score)) : null;
+  const vBest = vHist.length ? Math.max(...vHist.map(h => h.score)) : null;
+
+  document.getElementById('baseline-best').textContent = bBest != null ? bBest.toFixed(2) : '—';
+  document.getElementById('baseline-iters').textContent = bHist.length + ' iterations';
+  document.getElementById('vial-best').textContent = vBest != null ? vBest.toFixed(2) : '—';
+  document.getElementById('vial-iters').textContent = vHist.length + ' iterations';
+
+  if (bBest != null && vBest != null) {
+    const pct = ((vBest - bBest) / Math.max(1, Math.abs(bBest))) * 100;
+    document.getElementById('improvement').textContent = (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%';
+  }
+
+  const capsules = state.capsules || [];
+  document.getElementById('capsule-count').textContent = capsules.length + ' gene capsules active';
+  document.getElementById('capsule-total').textContent = capsules.length;
+
+  // Chart
+  drawChart(bHist, vHist);
+
+  // Capsule list
+  const listEl = document.getElementById('capsules-list');
+  if (capsules.length === 0) {
+    listEl.innerHTML = '<div class="empty">No capsules yet.</div>';
+  } else {
+    // Sort: learned/llm first (freshest story), then by confidence
+    const sorted = [...capsules].sort((a, b) => {
+      if (a.source === 'seed' && b.source !== 'seed') return 1;
+      if (b.source === 'seed' && a.source !== 'seed') return -1;
+      return b.confidence - a.confidence;
+    });
+    listEl.innerHTML = sorted.map(c => `
+      <div class="capsule">
+        <div class="capsule-head">
+          <span class="capsule-id">${c.id}</span>
+          <span class="capsule-src src-${c.source}">${c.source}</span>
+        </div>
+        <div class="capsule-trigger">${c.trigger}</div>
+        <div class="capsule-bar"><div class="capsule-bar-fill" style="width:${c.confidence * 100}%"></div></div>
+        <div class="capsule-stats">
+          <div class="capsule-stat">conf ${(c.confidence * 100).toFixed(0)}%</div>
+          <div class="capsule-stat">hits ${c.hitCount}</div>
+          <div class="capsule-stat">Δ ${c.totalScoreDelta.toFixed(1)}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Iteration log
+  const logEl = document.getElementById('iter-log');
+  const allIters = history.slice(-30).reverse();
+  if (allIters.length === 0) {
+    logEl.innerHTML = '<div class="empty">No iterations yet.</div>';
+  } else {
+    logEl.innerHTML = allIters.map(h => `
+      <div class="iter-row">
+        <span class="i">#${h.iteration}</span>
+        <span class="${state.mode === 'baseline' ? 's-base' : 's-vial'}">${h.score.toFixed(3)}</span>
+        <span class="i">${(h.appliedCapsules || []).length} caps</span>
+        <span class="tags">${(h.failureCategories || []).join(' · ') || 'clean'}</span>
+      </div>
+    `).join('');
+  }
+}
+
+function drawChart(baseline, vial) {
+  const svg = document.getElementById('chart');
+  const W = 800, H = 320, PAD = 30;
+  const maxIter = Math.max(baseline.length, vial.length, 10);
+  const all = [...baseline.map(h => h.score), ...vial.map(h => h.score)].filter(s => isFinite(s));
+  if (all.length === 0) {
+    svg.innerHTML = '<text x="400" y="160" fill="rgba(255,255,255,0.3)" text-anchor="middle" font-family="JetBrains Mono" font-size="11">awaiting data</text>';
+    return;
+  }
+  const minY = Math.min(0, ...all);
+  const maxY = Math.max(1, ...all);
+  const range = maxY - minY || 1;
+
+  const x = i => PAD + (i / Math.max(1, maxIter - 1)) * (W - PAD * 2);
+  const y = s => H - PAD - ((s - minY) / range) * (H - PAD * 2);
+
+  // Grid
+  let grid = '';
+  for (let g = 0; g <= 4; g++) {
+    const yy = PAD + (g / 4) * (H - PAD * 2);
+    grid += `<line x1="${PAD}" y1="${yy}" x2="${W - PAD}" y2="${yy}" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>`;
+    const val = maxY - (g / 4) * range;
+    grid += `<text x="${PAD - 6}" y="${yy + 3}" fill="rgba(255,255,255,0.3)" font-family="JetBrains Mono" font-size="9" text-anchor="end">${val.toFixed(1)}</text>`;
+  }
+
+  // Baseline line (running max for fair comparison)
+  let bPath = '';
+  let runMax = -Infinity;
+  baseline.forEach((h, i) => {
+    if (h.score > runMax) runMax = h.score;
+    bPath += (i === 0 ? 'M' : 'L') + x(i) + ',' + y(runMax);
+  });
+
+  // Vial line
+  let vPath = '';
+  runMax = -Infinity;
+  vial.forEach((h, i) => {
+    if (h.score > runMax) runMax = h.score;
+    vPath += (i === 0 ? 'M' : 'L') + x(i) + ',' + y(runMax);
+  });
+
+  // Raw points
+  let bPts = baseline.map(h => `<circle cx="${x(h.iteration)}" cy="${y(h.score)}" r="2.5" fill="#93c5fd" opacity="0.5"/>`).join('');
+  let vPts = vial.map(h => `<circle cx="${x(h.iteration)}" cy="${y(h.score)}" r="2.5" fill="#fcd34d" opacity="0.8"/>`).join('');
+
+  svg.innerHTML = `
+    ${grid}
+    ${bPath ? `<path d="${bPath}" fill="none" stroke="#93c5fd" stroke-width="2" stroke-dasharray="4,4"/>` : ''}
+    ${vPath ? `<path d="${vPath}" fill="none" stroke="#fcd34d" stroke-width="2.5"/>` : ''}
+    ${bPts}
+    ${vPts}
+  `;
+}
+
+fetchState();
+// preview: no polling
+</script>
+</body>
+</html>

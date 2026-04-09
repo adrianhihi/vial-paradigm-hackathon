@@ -1,0 +1,303 @@
+{
+  "runId": "9fccbef5",
+  "mode": "ab",
+  "lastUpdate": "2026-04-09T04:54:34.686Z",
+  "historyBaseline": [
+    {
+      "iteration": 0,
+      "score": 368.85,
+      "appliedCapsules": [],
+      "failureCategories": []
+    },
+    {
+      "iteration": 1,
+      "score": 313.65,
+      "appliedCapsules": [],
+      "failureCategories": []
+    },
+    {
+      "iteration": 2,
+      "score": 313.04,
+      "appliedCapsules": [],
+      "failureCategories": []
+    },
+    {
+      "iteration": 3,
+      "score": 295.7,
+      "appliedCapsules": [],
+      "failureCategories": []
+    },
+    {
+      "iteration": 4,
+      "score": null,
+      "appliedCapsules": [],
+      "failureCategories": [
+        "compile-error"
+      ]
+    },
+    {
+      "iteration": 5,
+      "score": 327,
+      "appliedCapsules": [],
+      "failureCategories": []
+    },
+    {
+      "iteration": 6,
+      "score": null,
+      "appliedCapsules": [],
+      "failureCategories": [
+        "compile-error"
+      ]
+    },
+    {
+      "iteration": 7,
+      "score": null,
+      "appliedCapsules": [],
+      "failureCategories": [
+        "compile-error"
+      ]
+    },
+    {
+      "iteration": 8,
+      "score": null,
+      "appliedCapsules": [],
+      "failureCategories": [
+        "compile-error"
+      ]
+    },
+    {
+      "iteration": 9,
+      "score": 306.12,
+      "appliedCapsules": [],
+      "failureCategories": []
+    }
+  ],
+  "historyVial": [
+    {
+      "iteration": 0,
+      "score": 357.36,
+      "appliedCapsules": [
+        "amm-seed-004",
+        "amm-seed-010",
+        "amm-seed-008"
+      ],
+      "failureCategories": []
+    },
+    {
+      "iteration": 1,
+      "score": 327,
+      "appliedCapsules": [
+        "amm-seed-004",
+        "amm-seed-010",
+        "amm-seed-008"
+      ],
+      "failureCategories": []
+    },
+    {
+      "iteration": 2,
+      "score": 355.68,
+      "appliedCapsules": [
+        "amm-seed-004",
+        "amm-seed-010",
+        "amm-seed-008"
+      ],
+      "failureCategories": []
+    },
+    {
+      "iteration": 3,
+      "score": 355.67,
+      "appliedCapsules": [
+        "amm-seed-004",
+        "amm-seed-010",
+        "amm-seed-008",
+        "learned-cd2a8f0a500f"
+      ],
+      "failureCategories": []
+    },
+    {
+      "iteration": 4,
+      "score": 355.7,
+      "appliedCapsules": [
+        "amm-seed-004",
+        "amm-seed-010",
+        "amm-seed-005",
+        "learned-cd2a8f0a500f"
+      ],
+      "failureCategories": []
+    },
+    {
+      "iteration": 5,
+      "score": 292.5,
+      "appliedCapsules": [
+        "amm-seed-004",
+        "amm-seed-010",
+        "amm-seed-005",
+        "learned-cd2a8f0a500f",
+        "learned-06f401472ff0"
+      ],
+      "failureCategories": []
+    },
+    {
+      "iteration": 6,
+      "score": 346.27,
+      "appliedCapsules": [
+        "amm-seed-004",
+        "amm-seed-010",
+        "amm-seed-008",
+        "learned-cd2a8f0a500f",
+        "learned-06f401472ff0"
+      ],
+      "failureCategories": []
+    },
+    {
+      "iteration": 7,
+      "score": 355.69,
+      "appliedCapsules": [
+        "amm-seed-004",
+        "amm-seed-010",
+        "amm-seed-008",
+        "learned-cd2a8f0a500f",
+        "learned-ea66c6e1bf4e"
+      ],
+      "failureCategories": []
+    },
+    {
+      "iteration": 8,
+      "score": 355.68,
+      "appliedCapsules": [
+        "amm-seed-004",
+        "amm-seed-010",
+        "amm-seed-008",
+        "learned-cd2a8f0a500f",
+        "learned-ea66c6e1bf4e"
+      ],
+      "failureCategories": []
+    },
+    {
+      "iteration": 9,
+      "score": 355.68,
+      "appliedCapsules": [
+        "amm-seed-004",
+        "amm-seed-010",
+        "amm-seed-008",
+        "learned-cd2a8f0a500f",
+        "learned-ea66c6e1bf4e"
+      ],
+      "failureCategories": []
+    }
+  ],
+  "capsules": [
+    {
+      "id": "amm-seed-004",
+      "trigger": "compile-error",
+      "source": "seed",
+      "confidence": 0.8899999999999999,
+      "hitCount": 10,
+      "totalScoreDelta": 105.68
+    },
+    {
+      "id": "amm-seed-005",
+      "trigger": "simple-amm:underperforms-normalizer",
+      "source": "seed",
+      "confidence": 0.87,
+      "hitCount": 2,
+      "totalScoreDelta": -63.170000000000016
+    },
+    {
+      "id": "amm-seed-010",
+      "trigger": "compile-error",
+      "source": "seed",
+      "confidence": 0.87,
+      "hitCount": 10,
+      "totalScoreDelta": 105.68
+    },
+    {
+      "id": "amm-seed-008",
+      "trigger": "underperforms-normalizer",
+      "source": "seed",
+      "confidence": 0.86,
+      "hitCount": 8,
+      "totalScoreDelta": 168.85000000000002
+    },
+    {
+      "id": "amm-seed-001",
+      "trigger": "underperforms-normalizer",
+      "source": "seed",
+      "confidence": 0.85,
+      "hitCount": 0,
+      "totalScoreDelta": 0
+    },
+    {
+      "id": "amm-seed-002",
+      "trigger": "negative-edge",
+      "source": "seed",
+      "confidence": 0.82,
+      "hitCount": 0,
+      "totalScoreDelta": 0
+    },
+    {
+      "id": "amm-seed-003",
+      "trigger": "plateau",
+      "source": "seed",
+      "confidence": 0.78,
+      "hitCount": 0,
+      "totalScoreDelta": 0
+    },
+    {
+      "id": "amm-seed-006",
+      "trigger": "simple-amm:underperforms-normalizer",
+      "source": "seed",
+      "confidence": 0.75,
+      "hitCount": 0,
+      "totalScoreDelta": 0
+    },
+    {
+      "id": "amm-seed-009",
+      "trigger": "simple-amm:negative-edge",
+      "source": "seed",
+      "confidence": 0.74,
+      "hitCount": 0,
+      "totalScoreDelta": 0
+    },
+    {
+      "id": "amm-seed-007",
+      "trigger": "plateau",
+      "source": "seed",
+      "confidence": 0.72,
+      "hitCount": 0,
+      "totalScoreDelta": 0
+    },
+    {
+      "id": "learned-ea66c6e1bf4e",
+      "trigger": "simple-amm:score-below-baseline",
+      "source": "llm",
+      "confidence": 0.6699999999999999,
+      "hitCount": 3,
+      "totalScoreDelta": 9.410000000000025
+    },
+    {
+      "id": "learned-cd2a8f0a500f",
+      "trigger": "simple-amm:score-below-baseline",
+      "source": "llm",
+      "confidence": 0.6499999999999999,
+      "hitCount": 7,
+      "totalScoreDelta": 0
+    },
+    {
+      "id": "learned-440b2260eee7",
+      "trigger": "simple-amm:score-below-baseline",
+      "source": "llm",
+      "confidence": 0.5942000000000002,
+      "hitCount": 0,
+      "totalScoreDelta": 0
+    },
+    {
+      "id": "learned-06f401472ff0",
+      "trigger": "simple-amm:score-below-baseline",
+      "source": "llm",
+      "confidence": 0.49029999999999974,
+      "hitCount": 2,
+      "totalScoreDelta": -9.430000000000007
+    }
+  ]
+}

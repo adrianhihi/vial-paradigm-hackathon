@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vial — Automated Research Hackathon One-Pager</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0a07;--text:#f0ebe3;--dim:rgba(240,235,227,0.65);--muted:rgba(240,235,227,0.4);
+  --border:rgba(255,255,255,0.08);--glass:rgba(255,255,255,0.03);
+  --amber:#f59e0b;--orange:#fb923c;--green:#10b981;--blue:#3b82f6;--purple:#8b5cf6;
+  --mono:'JetBrains Mono',monospace;--sans:'Sora',-apple-system,sans-serif
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.55;padding:36px 28px;min-height:100vh}
+body::before{content:'';position:fixed;top:-200px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(245,158,11,0.08) 0%,transparent 70%);pointer-events:none;z-index:0}
+.page{max-width:820px;margin:0 auto;position:relative;z-index:1}
+
+/* Header */
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.brand{font-size:10px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:var(--amber);font-family:var(--mono);margin-bottom:6px}
+h1{font-size:30px;font-weight:300;letter-spacing:-0.025em;line-height:1.15;margin-bottom:6px}
+h1 span{font-weight:700;background:linear-gradient(135deg,var(--amber),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tagline{font-size:13px;color:var(--dim);max-width:540px}
+.venue{text-align:right;font-size:9px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;line-height:1.7}
+.venue strong{color:var(--amber)}
+
+/* Section */
+.section{margin-bottom:24px}
+.sec-label{font-size:9px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--amber);font-family:var(--mono);margin-bottom:10px}
+.sec-body{font-size:13px;color:var(--dim)}
+
+/* PCEC loop diagram */
+.pcec{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+.pcec-node{background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:12px 10px;text-align:center;position:relative}
+.pcec-letter{font-size:18px;font-weight:700;font-family:var(--mono);color:var(--amber);margin-bottom:2px}
+.pcec-name{font-size:10px;font-weight:600;color:var(--text);margin-bottom:2px}
+.pcec-desc{font-size:9px;color:var(--muted);line-height:1.4}
+.pcec-node:not(:last-child)::after{content:'→';position:absolute;right:-12px;top:50%;transform:translateY(-50%);color:var(--amber);font-size:14px;z-index:2}
+
+/* Proof row */
+.proofs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}
+.proof{background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.proof-badge{display:inline-block;font-size:8px;font-weight:700;font-family:var(--mono);padding:3px 7px;border-radius:10px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px}
+.badge-prod{background:rgba(16,185,129,0.12);color:#6ee7b7;border:1px solid rgba(16,185,129,0.25)}
+.badge-today{background:rgba(245,158,11,0.12);color:#fcd34d;border:1px solid rgba(245,158,11,0.25)}
+.proof-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.proof-sub{font-size:10px;color:var(--muted);font-family:var(--mono);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.08em}
+.metric-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-top:1px solid rgba(255,255,255,0.05);font-size:11px}
+.metric-row:first-of-type{border-top:none}
+.metric-label{color:var(--dim)}
+.metric-value{font-family:var(--mono);font-weight:600}
+.metric-value.good{color:#6ee7b7}
+.metric-value.bad{color:#fca5a5}
+.proof-note{font-size:9px;color:var(--muted);font-family:var(--mono);margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05)}
+
+/* Story blocks */
+.what-is{background:rgba(245,158,11,0.04);border:1px solid rgba(245,158,11,0.15);border-radius:12px;padding:16px 20px;margin-bottom:20px}
+.what-is p{font-size:12.5px;color:var(--dim);margin-bottom:6px}
+.what-is p:last-child{margin-bottom:0}
+.what-is strong{color:var(--amber);font-weight:600}
+
+/* Differentiation table */
+.diff{width:100%;border-collapse:collapse;margin-top:6px;font-size:11px}
+.diff th,.diff td{text-align:left;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.diff th{font-family:var(--mono);font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em}
+.diff td:first-child{font-weight:600;color:var(--text);width:25%}
+.diff td{color:var(--dim)}
+
+/* Footer */
+.footer{display:flex;justify-content:space-between;align-items:center;margin-top:28px;padding-top:18px;border-top:1px solid var(--border);font-size:10px;font-family:var(--mono);color:var(--muted)}
+.footer a{color:var(--amber);text-decoration:none}
+.contact{text-align:right;line-height:1.7}
+.contact strong{color:var(--text);font-weight:600}
+
+@media print{
+  body{background:#fff;color:#111;padding:20px}
+  body::before{display:none}
+  .card,.proof,.pcec-node,.what-is{background:#f7f5f0 !important;border-color:#ddd !important;color:#111 !important}
+  .brand,.sec-label,.pcec-letter,.what-is strong{color:#b45309 !important;-webkit-print-color-adjust:exact}
+  h1 span{color:#b45309 !important;background:none;-webkit-text-fill-color:#b45309}
+  .tagline,.sec-body,.metric-label,.proof-sub,.pcec-desc,.diff td{color:#444 !important}
+  .metric-value.good{color:#047857 !important}
+  .metric-value.bad{color:#b91c1c !important}
+  .footer{color:#666 !important}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div>
+      <div class="brand">Vial Runtime · Automated Research Hackathon</div>
+      <h1>Self-healing runtime, <span>now proving itself on Paradigm's own benchmark</span></h1>
+      <div class="tagline">Vial turns "LLM + simulator" into a self-improving research loop. Same Sonnet 4.5, wrapped in the PCEC engine: zero compile failures, 80% higher expected edge per attempt, and a stable learned attractor — on Paradigm's own benchmark.</div>
+    </div>
+    <div class="venue">
+      <strong>April 9, 2026</strong><br>
+      San Francisco<br>
+      Paradigm HQ<br>
+      <br>
+      Track: <strong>Project</strong><br>
+      Team: VialOS
+    </div>
+  </div>
+
+  <div class="what-is">
+    <p><strong>What Vial is.</strong> A domain-agnostic runtime that watches an agent or automation execute, detects failures, and repairs them in-place using learned strategies persisted in a Gene Map. 553 tests, v2.7.0, open-source core at <code>@vial-agent/runtime</code>.</p>
+    <p><strong>Why it matters for automated research.</strong> Automated research <em>is</em> a PCEC loop: propose a solution, evaluate it, diagnose why it failed, try again with what you learned. Vial already implements this loop as runtime primitives — we just needed to point it at a new domain.</p>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">① The PCEC Loop</div>
+    <div class="pcec">
+      <div class="pcec-node">
+        <div class="pcec-letter">P</div>
+        <div class="pcec-name">Perceive</div>
+        <div class="pcec-desc">Score below baseline, plateau, compile error, routing anomaly</div>
+      </div>
+      <div class="pcec-node">
+        <div class="pcec-letter">C</div>
+        <div class="pcec-name">Construct</div>
+        <div class="pcec-desc">Retrieve relevant capsules from Gene Map, condition next generation</div>
+      </div>
+      <div class="pcec-node">
+        <div class="pcec-letter">E</div>
+        <div class="pcec-name">Evaluate</div>
+        <div class="pcec-desc">Run on local Paradigm harness, measure Edge, parse failure signals</div>
+      </div>
+      <div class="pcec-node">
+        <div class="pcec-letter">C</div>
+        <div class="pcec-name">Commit</div>
+        <div class="pcec-desc">If improved, synthesize new capsule; if regressed, decay confidence</div>
+      </div>
+    </div>
+    <div class="sec-body">Every capsule is human-readable — trigger category, repair strategy, rationale. Not opaque weights. Auditable, explainable, portable across runs.</div>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">② The Proofs</div>
+    <div class="proofs">
+      <div class="proof">
+        <div class="proof-badge badge-prod">Production · Feb 2026</div>
+        <div class="proof-title">Base Mainnet A/B Test</div>
+        <div class="proof-sub">144 on-chain txs · 70+ verified on BaseScan</div>
+        <div class="metric-row"><span class="metric-label">Control (blind retry)</span><span class="metric-value bad">53.1% → 77.5%</span></div>
+        <div class="metric-row"><span class="metric-label">Helix (PCEC)</span><span class="metric-value good">87.5% → 100%</span></div>
+        <div class="metric-row"><span class="metric-label">Uniswap V3 STF slippage</span><span class="metric-value good">Repaired 2/2</span></div>
+        <div class="metric-row"><span class="metric-label">Expired deadlines</span><span class="metric-value good">Repaired 8/8</span></div>
+        <div class="proof-note">Payment-domain vertical. Proves the mechanism works on irreversible real-money operations.</div>
+      </div>
+      <div class="proof">
+        <div class="proof-badge badge-today">Apr 9 · Paradigm Arena</div>
+        <div class="proof-title">Simple AMM — Solidity Fee Strategy</div>
+        <div class="proof-sub">10 iterations · Sonnet 4.5 · amm-match local harness</div>
+        <div class="metric-row"><span class="metric-label">Baseline compile failures</span><span class="metric-value bad">4 / 10 (40%)</span></div>
+        <div class="metric-row"><span class="metric-label">Vial compile failures</span><span class="metric-value good">0 / 10 (0%)</span></div>
+        <div class="metric-row"><span class="metric-label">Baseline expected edge / attempt</span><span class="metric-value bad">192.4</span></div>
+        <div class="metric-row"><span class="metric-label">Vial expected edge / attempt</span><span class="metric-value good">345.7</span></div>
+        <div class="metric-row"><span class="metric-label">Vial improvement</span><span class="metric-value good">+79.7%</span></div>
+        <div class="metric-row"><span class="metric-label">Gene capsules learned in run</span><span class="metric-value good">4 new (14 total)</span></div>
+        <div class="proof-note">Same model, same harness, same seed. Vial's Gene Map eliminated all compile failures and converged on a stable 355 attractor across 6 iterations. Not cherry-picked best — expected edge per attempt, which is the right metric for production where failures earn zero.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">③ Why this isn't LLM fine-tuning or a better prompt</div>
+    <table class="diff">
+      <tr>
+        <th>Dimension</th>
+        <th>Prompt engineering</th>
+        <th>RL / fine-tuning</th>
+        <th>Vial PCEC</th>
+      </tr>
+      <tr>
+        <td>Learning unit</td>
+        <td>Static instructions</td>
+        <td>Weight updates</td>
+        <td>Gene Capsules (text, auditable)</td>
+      </tr>
+      <tr>
+        <td>Training cost</td>
+        <td>Free but plateaus</td>
+        <td>$$$ & slow</td>
+        <td>Per-iteration LLM calls, persistent</td>
+      </tr>
+      <tr>
+        <td>Portability</td>
+        <td>Prompt-specific</td>
+        <td>Model-specific</td>
+        <td>Cross-model, cross-domain</td>
+      </tr>
+      <tr>
+        <td>Explainability</td>
+        <td>✅</td>
+        <td>❌</td>
+        <td>✅</td>
+      </tr>
+      <tr>
+        <td>Independent convergence</td>
+        <td>—</td>
+        <td>—</td>
+        <td>EvoMap (Shenzhen, 772⭐) reached same PCEC + Gene metaphor</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="footer">
+    <div>
+      <div>github.com/adrianhihi/helix-sdk</div>
+      <div>npm: @vial-agent/runtime · @helix-agent/core · n8n-nodes-vialos</div>
+    </div>
+    <div class="contact">
+      <strong>Nicholas</strong> · CEO · VialOS<br>
+      <strong>Adrian</strong> · CTO · remote today, on the loop<br>
+      <strong>Team size 2</strong> · shipping since Dec 2025
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
