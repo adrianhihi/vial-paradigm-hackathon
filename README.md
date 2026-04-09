@@ -166,7 +166,7 @@ cd dashboard && python3 -m http.server 8080
 
 ## Contact (for Nicholas on stage)
 
-- GitHub: `github.com/adrianhihi/helix-sdk`
+- GitHub: `github.com/adrianhihi/helix`
 - npm: `@vial-agent/runtime`, `@helix-agent/core`, `n8n-nodes-vialos`
 - Base proof report: `helix-base-ab-test-report.html` (keep on laptop, 144 txs on-chain)
 - Architecture deck: `helix-architecture.html`
